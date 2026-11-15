@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -8,7 +9,9 @@ android {
     compileSdk {
         version = release(37)
     }
-
+    buildFeatures {
+        compose = true
+    }
     defaultConfig {
         applicationId = "com.example.todo_list"
         minSdk = 24
@@ -54,4 +57,19 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.room:room-testing:2.8.5")
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+// Jetpack Compose
+    implementation(platform(libs.androidx.compose.bom))
+
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui.preview)
+
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
+// Activity Compose
+    implementation(libs.androidx.activity.compose)
+
+// ViewModel Compose
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 }
