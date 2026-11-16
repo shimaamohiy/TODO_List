@@ -23,7 +23,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.todo_list.data.Task
 import com.example.todo_list.viewmodel.TaskViewModel
-
+import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -58,6 +58,19 @@ fun HomeScreen(
         mutableStateOf<Task?>(null)
     }
 
+
+    val todayStart = Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }.timeInMillis
+
+    val tomorrowStart = Calendar.getInstance().apply {
+        timeInMillis = todayStart
+        add(Calendar.DAY_OF_YEAR, 1)
+    }.timeInMillis
+
     val tasksToDisplay = when (selectedItem) {
 
         "Completed" ->
@@ -67,8 +80,14 @@ fun HomeScreen(
             visibleTasks
 
         else ->
-            visibleTasks.filter { !it.isCompleted }
+            visibleTasks.filter { task ->
+                !task.isCompleted &&
+                        task.dueDate != null &&
+                        task.dueDate >= todayStart &&
+                        task.dueDate < tomorrowStart
+            }
     }
+
 
     val categories = listOf(
         "All",
