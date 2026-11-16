@@ -17,18 +17,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.todo_list.data.Task
+import com.example.todo_list.utils.IntentHelper
 import com.example.todo_list.viewmodel.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: TaskViewModel
+    viewModel: TaskViewModel,
+    initialSharedText: String? = null
 ) {
+    val context = LocalContext.current
 
     val allTasks by viewModel.allTasks.collectAsState()
 
@@ -51,11 +55,13 @@ fun HomeScreen(
     }
 
     var showAddEditScreen by remember {
-        mutableStateOf(false)
+        mutableStateOf(initialSharedText != null)
     }
 
     var selectedTask by remember {
-        mutableStateOf<Task?>(null)
+        mutableStateOf<Task?>(
+            if (initialSharedText != null) Task(title = "", description = initialSharedText) else null
+        )
     }
 
     val tasksToDisplay = when (selectedItem) {
@@ -438,8 +444,13 @@ fun HomeScreen(
                                 },
 
                                 onClick = {
-                                    selectedTask = task
-                                    showAddEditScreen = true
+                                    // EXPLICIT INTENT: Navigate to TaskDetailActivity
+                                    IntentHelper.openTaskDetail(context, task.id)
+                                },
+
+                                onShare = {
+                                    // IMPLICIT INTENT: Share task details via system chooser
+                                    IntentHelper.shareTask(context, task)
                                 },
 
                                 onDelete = {

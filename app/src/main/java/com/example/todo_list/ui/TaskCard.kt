@@ -26,7 +26,8 @@ fun TaskCard(
     task: Task,
     onCheckedChange: () -> Unit,
     onClick: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onShare: () -> Unit = {}
 ) {
 
     val priorityColor = when (task.priority.lowercase()) {
@@ -154,15 +155,28 @@ fun TaskCard(
                 }
             }
 
-            IconButton(
-                onClick = onDelete
-            ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                // Implicit Intent: Quick Share from task card
+                IconButton(
+                    onClick = onShare
+                ) {
+                    Text(
+                        text = "⤴",
+                        color = DeepPurple,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-                Text(
-                    text = "✕",
-                    color = Color.Red,
-                    fontSize = 19.sp
-                )
+                IconButton(
+                    onClick = onDelete
+                ) {
+                    Text(
+                        text = "✕",
+                        color = Color.Red,
+                        fontSize = 19.sp
+                    )
+                }
             }
         }
     }

@@ -193,6 +193,9 @@ class TaskViewModel(
     fun search(query: String) =
         repository.searchTasks(query)
 
+    fun getTaskById(taskId: Int): kotlinx.coroutines.flow.Flow<Task?> =
+        repository.getTaskById(taskId)
+
     private fun startOfDay(time: Long): Long {
 
         return Calendar.getInstance().apply {

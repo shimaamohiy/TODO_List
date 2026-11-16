@@ -114,10 +114,14 @@ object NotificationHelper {
 
         createNotificationChannel(context)
 
+        // Explicit Intent: Directly launches TaskDetailActivity with task ID extra
         val intent = Intent(
             context,
-            MainActivity::class.java
-        )
+            com.example.todo_list.ui.TaskDetailActivity::class.java
+        ).apply {
+            putExtra(com.example.todo_list.ui.TaskDetailActivity.EXTRA_TASK_ID, taskId)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
 
         val pendingIntent = PendingIntent.getActivity(
             context,

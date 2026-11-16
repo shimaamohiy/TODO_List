@@ -3,10 +3,14 @@ package com.example.todo_list
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
+import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.todo_list.data.TaskDatabase
 import com.example.todo_list.data.TaskRepository
@@ -16,6 +20,8 @@ import com.example.todo_list.viewmodel.TaskViewModel
 import com.example.todo_list.viewmodel.TaskViewModelFactory
 
 class MainActivity : ComponentActivity() {
+
+    private var incomingSharedText by mutableStateOf<String?>(null)
 
     private val notificationPermissionLauncher =
         registerForActivityResult(
@@ -27,6 +33,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+
+        // Handle incoming Implicit Intent (ACTION_SEND from other apps)
+        handleIncomingIntent(intent)
 
         enableEdgeToEdge()
 
@@ -58,8 +67,21 @@ class MainActivity : ComponentActivity() {
             )
 
             HomeScreen(
-                viewModel = taskViewModel
+                viewModel = taskViewModel,
+                initialSharedText = incomingSharedText
             )
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIncomingIntent(intent)
+    }
+
+    private fun handleIncomingIntent(intent: Intent?) {
+        if (intent?.action == Intent.ACTION_SEND && intent.type == "text/plain") {
+            incomingSharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
         }
     }
 }
