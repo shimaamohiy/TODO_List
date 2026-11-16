@@ -132,7 +132,7 @@ fun HomeScreen(
             // HEADER
 
             Text(
-                "Hello, Welcome! 👋",
+                "Hello, Welcome! ",
                 fontSize = 25.sp,
                 fontWeight = FontWeight.Bold,
                 color = DeepPurple
@@ -166,21 +166,21 @@ fun HomeScreen(
                     "Total Tasks",
                     totalCount,
                     LightPurple,
-                    "📋"
+
                 )
 
                 SummaryCard(
                     "Completed",
                     completedCount,
                     LightPink,
-                    "✅"
+
                 )
 
                 SummaryCard(
                     "Pending",
                     totalCount - completedCount,
                     Color(0xFFE8E0FF),
-                    "⏳"
+
                 )
             }
 
@@ -370,16 +370,6 @@ fun HomeScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        Text(
-                            if (searchQuery.isNotEmpty() ||
-                                selectedPriority != "All" ||
-                                selectedCategory != "All"
-                            ) "🔍"
-                            else "📝",
-                            fontSize = 45.sp
-                        )
-
-                        Spacer(Modifier.height(10.dp))
 
                         Text(
                             if (searchQuery.isNotEmpty() ||
@@ -397,7 +387,7 @@ fun HomeScreen(
                                 selectedPriority != "All" ||
                                 selectedCategory != "All"
                             ) "Try changing your search or filters."
-                            else "Add your first task and get organized 💜",
+                            else "Add your first task and get organized ",
                             color = GrayText,
                             fontSize = 13.sp
                         )

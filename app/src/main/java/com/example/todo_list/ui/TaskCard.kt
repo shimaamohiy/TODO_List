@@ -147,7 +147,7 @@ fun TaskCard(
                     Spacer(Modifier.height(8.dp))
 
                     Text(
-                        text = "📅 $dueDateText",
+                        text = " $dueDateText",
                         fontSize = 11.sp,
                         color = GrayText
                     )

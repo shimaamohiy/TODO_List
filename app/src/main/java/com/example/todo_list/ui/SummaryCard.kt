@@ -19,7 +19,7 @@ fun SummaryCard(
     title: String,
     count: Int,
     color: Color,
-    emoji: String
+
 ) {
 
     val animatedCount by animateIntAsState(
@@ -37,23 +37,19 @@ fun SummaryCard(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Text(
-            text = emoji,
-            fontSize = 25.sp
-        )
 
         Column {
 
             Text(
                 text = animatedCount.toString(),
-                fontSize = 25.sp,
+                fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 color = MainText
             )
 
             Text(
                 text = title,
-                fontSize = 12.sp,
+                fontSize = 15.sp,
                 color = MainText
             )
         }
