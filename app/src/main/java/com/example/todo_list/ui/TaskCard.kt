@@ -148,7 +148,7 @@ fun TaskCard(
 
                     Text(
                         text = " $dueDateText",
-                        fontSize = 11.sp,
+                        fontSize = 10.sp,
                         color = GrayText
                     )
                 }
@@ -161,7 +161,7 @@ fun TaskCard(
                 Text(
                     text = "✕",
                     color = Color.Red,
-                    fontSize = 19.sp
+                    fontSize = 20.sp
                 )
             }
         }
