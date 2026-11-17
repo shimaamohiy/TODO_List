@@ -224,7 +224,7 @@ fun HomeScreen(
                         .fillMaxWidth()
                         .height(9.dp),
                     color = Pink,
-                    trackColor = LightPurple,
+                    trackColor = Red,
                     strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
                 )
             }
