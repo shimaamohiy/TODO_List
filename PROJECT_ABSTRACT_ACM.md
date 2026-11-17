@@ -2,7 +2,7 @@
 
 **Course:** FNI-421 Mobile Computing  
 **Instructor:** Dr. Soha Nabil Hussein  
-**Authors:** Ali Al-Ashkar, Shimaa Mohiy, and Project Team  
+**Authors:** Ali Al-Ashkar, Shimaa Mohiy, Doha Abdelmogeth ,Mohamed Khaled ,Nour Elnahas
 **Affiliation:** Faculty of Computers and Artificial Intelligence / Information Systems  
 **Format:** ACM Extended Abstract Format (2 Pages)
 
