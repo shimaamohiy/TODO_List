@@ -58,6 +58,10 @@ fun HomeScreen(
         mutableStateOf<Task?>(null)
     }
 
+    var taskToDelete by remember {
+        mutableStateOf<Task?>(null)
+    }
+
     val tasksToDisplay = when (selectedItem) {
 
         "Completed" ->
@@ -443,7 +447,7 @@ fun HomeScreen(
                                 },
 
                                 onDelete = {
-                                    viewModel.deleteTask(task)
+                                    taskToDelete = task
                                 }
                             )
                         }
@@ -494,5 +498,43 @@ fun HomeScreen(
                 )
             }
         }
+    }
+
+    if (taskToDelete != null) {
+        AlertDialog(
+            onDismissRequest = {
+                taskToDelete = null
+            },
+            title = {
+                Text("Delete Task?")
+            },
+            text = {
+                Text(
+                    "Are you sure you want to delete this task? " +
+                            "This action cannot be undone."
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        taskToDelete?.let { task ->
+                            viewModel.deleteTask(task)
+                        }
+                        taskToDelete = null
+                    }
+                ) {
+                    Text("Delete", color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        taskToDelete = null
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
