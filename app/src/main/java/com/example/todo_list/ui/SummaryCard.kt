@@ -42,7 +42,7 @@ fun SummaryCard(
 
             Text(
                 text = animatedCount.toString(),
-                fontSize = 30.sp,
+                fontSize = 25.sp,
                 fontWeight = FontWeight.Bold,
                 color = MainText
             )
