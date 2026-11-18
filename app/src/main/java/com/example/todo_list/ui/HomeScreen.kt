@@ -17,18 +17,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.todo_list.data.Task
+import com.example.todo_list.utils.IntentHelper
 import com.example.todo_list.viewmodel.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: TaskViewModel
+    viewModel: TaskViewModel,
+    initialSharedText: String? = null
 ) {
+    val context = LocalContext.current
 
     val allTasks by viewModel.allTasks.collectAsState()
 
@@ -51,11 +55,13 @@ fun HomeScreen(
     }
 
     var showAddEditScreen by remember {
-        mutableStateOf(false)
+        mutableStateOf(initialSharedText != null)
     }
 
     var selectedTask by remember {
-        mutableStateOf<Task?>(null)
+        mutableStateOf<Task?>(
+            if (initialSharedText != null) Task(title = "", description = initialSharedText) else null
+        )
     }
 
     val tasksToDisplay = when (selectedItem) {
@@ -129,7 +135,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            // HEADER
+
 
             Text(
                 "Hello, Welcome! ",
@@ -146,7 +152,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(22.dp))
 
-            // SUMMARY
+
 
             Text(
                 "Your Overview",
@@ -186,7 +192,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            // PROGRESS
+
 
             Column(
                 modifier = Modifier
@@ -231,7 +237,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(18.dp))
 
-            // SEARCH
+
 
             OutlinedTextField(
                 value = searchQuery,
@@ -242,9 +248,7 @@ fun HomeScreen(
                 placeholder = {
                     Text("Search tasks...")
                 },
-                leadingIcon = {
-                    Text("🔍")
-                },
+
                 trailingIcon = {
 
                     if (searchQuery.isNotEmpty()) {
@@ -270,7 +274,6 @@ fun HomeScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // PRIORITY FILTER
 
             Text(
                 "Priority",
@@ -305,7 +308,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // CATEGORY FILTER
+
 
             Text(
                 "Category",
@@ -340,7 +343,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(15.dp))
 
-            // TASK TITLE
+
 
             Text(
                 when (selectedItem) {
@@ -438,8 +441,11 @@ fun HomeScreen(
                                 },
 
                                 onClick = {
-                                    selectedTask = task
-                                    showAddEditScreen = true
+                                    IntentHelper.openTaskDetail(context, task.id)
+                                },
+
+                                onShare = {
+                                    IntentHelper.shareTask(context, task)
                                 },
 
                                 onDelete = {
@@ -453,7 +459,7 @@ fun HomeScreen(
         }
     }
 
-    // ADD / EDIT DIALOG
+
 
     if (showAddEditScreen) {
 
