@@ -12,6 +12,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.todo_list.MainActivity
 import com.example.todo_list.R
 import com.example.todo_list.data.Task
+import com.example.todo_list.ui.TaskDetailActivity
 import java.util.Calendar
 
 object NotificationHelper {
@@ -114,12 +115,12 @@ object NotificationHelper {
 
         createNotificationChannel(context)
 
-        // Explicit Intent: Directly launches TaskDetailActivity with task ID extra
+
         val intent = Intent(
             context,
-            com.example.todo_list.ui.TaskDetailActivity::class.java
+            TaskDetailActivity::class.java
         ).apply {
-            putExtra(com.example.todo_list.ui.TaskDetailActivity.EXTRA_TASK_ID, taskId)
+            putExtra(TaskDetailActivity.EXTRA_TASK_ID, taskId)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 
@@ -136,7 +137,7 @@ object NotificationHelper {
             CHANNEL_ID
         )
             .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle("Task Reminder 💜")
+            .setContentTitle("Task Reminder ")
             .setContentText("Don't forget: $taskTitle")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
@@ -150,7 +151,7 @@ object NotificationHelper {
                 .notify(taskId, notification)
 
         } catch (_: SecurityException) {
-            // Notification permission is not granted.
+
         }
     }
 }

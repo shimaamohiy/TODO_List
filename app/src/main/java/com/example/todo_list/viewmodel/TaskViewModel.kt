@@ -70,7 +70,7 @@ class TaskViewModel(
             0f
         )
 
-    // Search
+    
 
     val searchQuery = MutableStateFlow("")
 
@@ -78,7 +78,7 @@ class TaskViewModel(
         searchQuery.value = query
     }
 
-    // Filters
+    
 
     val selectedPriority = MutableStateFlow("All")
 
@@ -98,7 +98,7 @@ class TaskViewModel(
         selectedCategory.value = "All"
     }
 
-    // Combined Search + Filters
+    
 
     val filteredTasks: StateFlow<List<Task>> =
         combine(
@@ -131,7 +131,7 @@ class TaskViewModel(
             emptyList()
         )
 
-    // Selected Day
+
 
     private val selectedDay =
         MutableStateFlow(startOfDay(System.currentTimeMillis()))
@@ -155,7 +155,7 @@ class TaskViewModel(
         selectedDay.value = dayStart
     }
 
-    // Task Operations
+
 
     fun insertTask(task: Task) {
         viewModelScope.launch {

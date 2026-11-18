@@ -34,7 +34,6 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
-        // Handle incoming Implicit Intent (ACTION_SEND from other apps)
         handleIncomingIntent(intent)
 
         enableEdgeToEdge()

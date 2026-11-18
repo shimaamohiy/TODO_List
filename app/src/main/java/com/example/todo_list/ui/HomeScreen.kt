@@ -135,7 +135,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            // HEADER
+
 
             Text(
                 "Hello, Welcome! ",
@@ -152,7 +152,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(22.dp))
 
-            // SUMMARY
+
 
             Text(
                 "Your Overview",
@@ -192,7 +192,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            // PROGRESS
+
 
             Column(
                 modifier = Modifier
@@ -237,7 +237,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(18.dp))
 
-            // SEARCH
+
 
             OutlinedTextField(
                 value = searchQuery,
@@ -248,9 +248,7 @@ fun HomeScreen(
                 placeholder = {
                     Text("Search tasks...")
                 },
-                leadingIcon = {
-                    Text("🔍")
-                },
+
                 trailingIcon = {
 
                     if (searchQuery.isNotEmpty()) {
@@ -276,7 +274,6 @@ fun HomeScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // PRIORITY FILTER
 
             Text(
                 "Priority",
@@ -311,7 +308,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // CATEGORY FILTER
+
 
             Text(
                 "Category",
@@ -346,7 +343,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(15.dp))
 
-            // TASK TITLE
+
 
             Text(
                 when (selectedItem) {
@@ -444,12 +441,10 @@ fun HomeScreen(
                                 },
 
                                 onClick = {
-                                    // EXPLICIT INTENT: Navigate to TaskDetailActivity
                                     IntentHelper.openTaskDetail(context, task.id)
                                 },
 
                                 onShare = {
-                                    // IMPLICIT INTENT: Share task details via system chooser
                                     IntentHelper.shareTask(context, task)
                                 },
 
@@ -464,7 +459,7 @@ fun HomeScreen(
         }
     }
 
-    // ADD / EDIT DIALOG
+
 
     if (showAddEditScreen) {
 

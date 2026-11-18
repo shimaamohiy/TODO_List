@@ -32,15 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/**
- * TaskDetailActivity demonstrates an EXPLICIT INTENT destination.
- * It is invoked explicitly from MainActivity or Notifications with EXTRA_TASK_ID.
- *
- * It also serves as a hub for IMPLICIT INTENTS:
- * - Share Task via Intent.ACTION_SEND
- * - Search Task online via Intent.ACTION_WEB_SEARCH
- * - Add Task to Calendar via Intent.ACTION_INSERT
- */
+
 class TaskDetailActivity : ComponentActivity() {
 
     companion object {
@@ -166,7 +158,7 @@ fun TaskDetailScreen(
             ) {
                 Spacer(Modifier.height(8.dp))
 
-                // Status Badge & Priority Row
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -216,7 +208,7 @@ fun TaskDetailScreen(
 
                 Spacer(Modifier.height(16.dp))
 
-                // Main Info Card
+
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -252,7 +244,7 @@ fun TaskDetailScreen(
                         HorizontalDivider(color = LightGray)
                         Spacer(Modifier.height(12.dp))
 
-                        // Dates Information
+
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -280,9 +272,9 @@ fun TaskDetailScreen(
 
                 Spacer(Modifier.height(24.dp))
 
-                // IMPLICIT INTENT ACTIONS SECTION
+
                 Text(
-                    text = "Actions & Sharing (Intents)",
+                    text = "Quick Actions",
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
                     color = MainText
@@ -290,7 +282,6 @@ fun TaskDetailScreen(
 
                 Spacer(Modifier.height(12.dp))
 
-                // Action 1: Implicit Intent - Share Task
                 Button(
                     onClick = { IntentHelper.shareTask(context, currentTask) },
                     modifier = Modifier
@@ -299,12 +290,11 @@ fun TaskDetailScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = LightPurple),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text("⤴  Share Task (Implicit Intent)", color = DeepPurple, fontWeight = FontWeight.Bold)
+                    Text("⤴  Share Task", color = DeepPurple, fontWeight = FontWeight.Bold)
                 }
 
                 Spacer(Modifier.height(10.dp))
 
-                // Action 2: Implicit Intent - Web Search
                 Button(
                     onClick = { IntentHelper.searchTaskOnline(context, currentTask.title) },
                     modifier = Modifier
@@ -313,10 +303,10 @@ fun TaskDetailScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = LightPink),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text("🔍  Search Resources Online (Implicit Intent)", color = DeepPurple, fontWeight = FontWeight.Bold)
+                    Text("Search on Web", color = DeepPurple, fontWeight = FontWeight.Bold)
                 }
 
-                // Action 3: Implicit Intent - Add to System Calendar (if due date exists)
+
                 if (currentTask.dueDate != null) {
                     Spacer(Modifier.height(10.dp))
                     Button(
@@ -327,13 +317,13 @@ fun TaskDetailScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE8E0FF)),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                        Text("📅  Add to Calendar (Implicit Intent)", color = DeepPurple, fontWeight = FontWeight.Bold)
+                        Text("Add to Calendar", color = DeepPurple, fontWeight = FontWeight.Bold)
                     }
                 }
 
                 Spacer(Modifier.height(24.dp))
 
-                // Task State Controls
+
                 Text(
                     text = "Manage Task",
                     fontSize = 17.sp,
@@ -393,7 +383,7 @@ fun TaskDetailScreen(
         }
     }
 
-    // Edit Task Dialog
+
     if (showEditDialog && taskState != null) {
         Dialog(
             onDismissRequest = { showEditDialog = false },
@@ -418,7 +408,7 @@ fun TaskDetailScreen(
         }
     }
 
-    // Delete Confirmation Dialog
+
     if (showDeleteConfirmDialog && taskState != null) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirmDialog = false },
