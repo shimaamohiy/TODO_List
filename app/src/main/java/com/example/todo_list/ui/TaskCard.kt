@@ -1,10 +1,8 @@
 package com.example.todo_list.ui
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -38,12 +36,10 @@ fun TaskCard(
     }
 
     val dueDateText = task.dueDate?.let {
-
         SimpleDateFormat(
             "dd MMM yyyy",
             Locale.getDefault()
         ).format(Date(it))
-
     }
 
     Card(
@@ -92,9 +88,7 @@ fun TaskCard(
                 )
 
                 if (task.description.isNotBlank()) {
-
                     Spacer(Modifier.height(4.dp))
-
                     Text(
                         text = task.description,
                         fontSize = 12.sp,
@@ -112,7 +106,6 @@ fun TaskCard(
                         color = LightPurple,
                         shape = RoundedCornerShape(8.dp)
                     ) {
-
                         Text(
                             text = task.category,
                             modifier = Modifier.padding(
@@ -130,7 +123,6 @@ fun TaskCard(
                         color = priorityColor.copy(alpha = 0.2f),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-
                         Text(
                             text = task.priority,
                             modifier = Modifier.padding(
@@ -144,19 +136,16 @@ fun TaskCard(
                 }
 
                 if (dueDateText != null) {
-
                     Spacer(Modifier.height(8.dp))
-
                     Text(
                         text = " $dueDateText",
-                        fontSize = 11.sp,
+                        fontSize = 10.sp,
                         color = GrayText
                     )
                 }
             }
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
                 IconButton(
                     onClick = onShare
                 ) {
