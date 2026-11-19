@@ -248,8 +248,8 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(9.dp),
-                    color = Pink,
-                    trackColor = Red,
+                    color =Red ,
+                    trackColor = Pink,
                     strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
                 )
             }

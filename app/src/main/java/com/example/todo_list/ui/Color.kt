@@ -16,7 +16,7 @@ val MainText = Color(0xFF25212B)
 
 val AppWhite = Color(0xFFFFFFFF)
 
-val GrayText = Color(0xFF888558F)
+val GrayText = Color(0xF8555256)
 
 val LightGray = Color(0xFFF5F3F7)
 
@@ -24,7 +24,7 @@ val Green = Color(0xFF73a99A)
 
 val Orange = Color(0xFFFFB86B)
 
-val Red = Color(0xFF330000)
+val Red = Color(0xFFA6296A)
 
 val CardShadow = Color(0xFFE8DFF5)
 
