@@ -26,6 +26,7 @@ import com.example.todo_list.data.Task
 import com.example.todo_list.utils.IntentHelper
 import com.example.todo_list.viewmodel.TaskViewModel
 import java.util.Calendar
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -185,34 +186,66 @@ fun HomeScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+                BoxWithConstraints(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    val isNarrowScreen = maxWidth < 340.dp
+                    if (isNarrowScreen) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            SummaryCard(
+                                title = "Total Tasks",
+                                count = totalCount,
+                                color = LightPurple,
+                                modifier = Modifier.fillMaxWidth()
+                            )
 
-                SummaryCard(
-                    "Total Tasks",
-                    totalCount,
-                    LightPurple,
+                            SummaryCard(
+                                title = "Completed",
+                                count = completedCount,
+                                color = LightPink,
+                                modifier = Modifier.fillMaxWidth()
+                            )
 
-                )
+                            SummaryCard(
+                                title = "Pending",
+                                count = totalCount - completedCount,
+                                color = Color(0xFFE8E0FF),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    } else {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            SummaryCard(
+                                title = "Total Tasks",
+                                count = totalCount,
+                                color = LightPurple,
+                                modifier = Modifier.weight(1f)
+                            )
 
-                SummaryCard(
-                    "Completed",
-                    completedCount,
-                    LightPink,
+                            SummaryCard(
+                                title = "Completed",
+                                count = completedCount,
+                                color = LightPink,
+                                modifier = Modifier.weight(1f)
+                            )
 
-                )
+                            SummaryCard(
+                                title = "Pending",
+                                count = totalCount - completedCount,
+                                color = Color(0xFFE8E0FF),
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                }
 
-                SummaryCard(
-                    "Pending",
-                    totalCount - completedCount,
-                    Color(0xFFE8E0FF),
 
-                )
-            }
-
-            Spacer(Modifier.height(20.dp))
+                        Spacer(Modifier.height(20.dp))
 
 
 
@@ -483,6 +516,7 @@ fun HomeScreen(
 
 
 
+
     if (showAddEditScreen) {
 
         Dialog(
@@ -493,36 +527,45 @@ fun HomeScreen(
                 usePlatformDefaultWidth = false
             )
         ) {
-
-            Surface(
+            BoxWithConstraints(
                 modifier = Modifier
-                    .fillMaxWidth(0.92f)
-                    .heightIn(max = 700.dp),
-                shape = RoundedCornerShape(24.dp),
-                color = Lavender
+                    .fillMaxSize()
+                    .safeDrawingPadding()
+                    .imePadding(),
+                contentAlignment = Alignment.Center
             ) {
+                val dialogWidth = minOf(maxWidth * 0.92f, 560.dp)
+                val dialogHeight = minOf(maxHeight * 0.90f, 650.dp)
 
-                AddEditTaskScreen(
-                    task = selectedTask,
+                Surface(
+                    modifier = Modifier
+                        .width(dialogWidth)
+                        .heightIn(max = dialogHeight),
+                    shape = RoundedCornerShape(24.dp),
+                    color = Lavender
+                ) {
+                    AddEditTaskScreen(
+                        task = selectedTask,
 
-                    onSave = { task ->
+                        onSave = { task ->
+                            if (selectedTask == null) {
+                                viewModel.insertTask(task)
+                            } else {
+                                viewModel.updateTask(task)
+                            }
 
-                        if (selectedTask == null) {
-                            viewModel.insertTask(task)
-                        } else {
-                            viewModel.updateTask(task)
+                            showAddEditScreen = false
+                        },
+
+                        onCancel = {
+                            showAddEditScreen = false
                         }
-
-                        showAddEditScreen = false
-                    },
-
-                    onCancel = {
-                        showAddEditScreen = false
-                    }
-                )
+                    )
+                }
             }
         }
     }
+
 
     if (taskToDelete != null) {
         AlertDialog(

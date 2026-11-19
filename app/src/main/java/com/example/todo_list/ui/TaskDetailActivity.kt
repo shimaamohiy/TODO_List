@@ -4,17 +4,49 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,7 +54,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.todo_list.data.Task
 import com.example.todo_list.data.TaskDatabase
 import com.example.todo_list.data.TaskRepository
 import com.example.todo_list.utils.IntentHelper
@@ -30,7 +61,8 @@ import com.example.todo_list.viewmodel.TaskViewModel
 import com.example.todo_list.viewmodel.TaskViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
+import androidx.compose.foundation.layout.FlowRow
+
 
 
 class TaskDetailActivity : ComponentActivity() {
@@ -69,6 +101,8 @@ fun TaskDetailScreen(
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    val currentLocale = configuration.locales[0]
     val taskState by viewModel.getTaskById(taskId).collectAsState(initial = null)
     var showEditDialog by remember { mutableStateOf(false) }
     var showDeleteConfirmDialog by remember { mutableStateOf(false) }
@@ -143,10 +177,10 @@ fun TaskDetailScreen(
             }
 
             val formattedDueDate = currentTask.dueDate?.let {
-                SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault()).format(Date(it))
+                SimpleDateFormat("EEE, dd MMM yyyy", currentLocale).format(Date(it))
             }
 
-            val formattedCreatedDate = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
+            val formattedCreatedDate = SimpleDateFormat("dd MMM yyyy, hh:mm a", currentLocale)
                 .format(Date(currentTask.createdAt))
 
             Column(
@@ -159,11 +193,13 @@ fun TaskDetailScreen(
                 Spacer(Modifier.height(8.dp))
 
 
-                Row(
+
+                FlowRow(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+
                     Surface(
                         color = if (currentTask.isCompleted) Green.copy(alpha = 0.2f) else Orange.copy(alpha = 0.2f),
                         shape = RoundedCornerShape(12.dp)
@@ -176,8 +212,6 @@ fun TaskDetailScreen(
                             color = if (currentTask.isCompleted) Green else Orange
                         )
                     }
-
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Surface(
                             color = LightPurple,
                             shape = RoundedCornerShape(12.dp)
@@ -203,7 +237,6 @@ fun TaskDetailScreen(
                                 color = MainText
                             )
                         }
-                    }
                 }
 
                 Spacer(Modifier.height(16.dp))
@@ -245,11 +278,13 @@ fun TaskDetailScreen(
                         Spacer(Modifier.height(12.dp))
 
 
-                        Row(
+
+                        Column(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            Column {
+
+                        Column {
                                 Text("Due Date", fontSize = 12.sp, color = GrayText)
                                 Text(
                                     formattedDueDate ?: "None",
@@ -258,7 +293,7 @@ fun TaskDetailScreen(
                                     color = if (formattedDueDate != null) DeepPurple else GrayText
                                 )
                             }
-                            Column(horizontalAlignment = Alignment.End) {
+                            Column(horizontalAlignment = Alignment.Start) {
                                 Text("Created At", fontSize = 12.sp, color = GrayText)
                                 Text(
                                     formattedCreatedDate,
@@ -286,7 +321,7 @@ fun TaskDetailScreen(
                     onClick = { IntentHelper.shareTask(context, currentTask) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp),
+                        .heightIn(min = 50.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = LightPurple),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -299,7 +334,7 @@ fun TaskDetailScreen(
                     onClick = { IntentHelper.searchTaskOnline(context, currentTask.title) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp),
+                        .heightIn(min = 50.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = LightPink),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -313,7 +348,7 @@ fun TaskDetailScreen(
                         onClick = { IntentHelper.addEventToCalendar(context, currentTask) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp),
+                            .heightIn(min = 50.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE8E0FF)),
                         shape = RoundedCornerShape(16.dp)
                     ) {
@@ -333,16 +368,17 @@ fun TaskDetailScreen(
 
                 Spacer(Modifier.height(12.dp))
 
-                Row(
+
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Button(
+                Button(
                         onClick = { viewModel.toggleCompleted(currentTask) },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(48.dp),
-                        colors = ButtonDefaults.buttonColors(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 48.dp),
+                    colors = ButtonDefaults.buttonColors(
                             containerColor = if (currentTask.isCompleted) Orange.copy(alpha = 0.8f) else Green.copy(alpha = 0.9f)
                         ),
                         shape = RoundedCornerShape(14.dp)
@@ -357,8 +393,8 @@ fun TaskDetailScreen(
                     OutlinedButton(
                         onClick = { showEditDialog = true },
                         modifier = Modifier
-                            .weight(1f)
-                            .height(48.dp),
+                            .fillMaxWidth()
+                            .heightIn(min = 48.dp),
                         shape = RoundedCornerShape(14.dp)
                     ) {
                         Text("Edit Task", color = DeepPurple, fontWeight = FontWeight.Bold)
@@ -371,7 +407,7 @@ fun TaskDetailScreen(
                     onClick = { showDeleteConfirmDialog = true },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp),
+                        .heightIn(min = 48.dp),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Red),
                     shape = RoundedCornerShape(14.dp)
                 ) {
@@ -384,29 +420,48 @@ fun TaskDetailScreen(
     }
 
 
+
     if (showEditDialog && taskState != null) {
         Dialog(
-            onDismissRequest = { showEditDialog = false },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
+            onDismissRequest = {
+                showEditDialog = false
+            },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false
+            )
         ) {
-            Surface(
+            BoxWithConstraints(
                 modifier = Modifier
-                    .fillMaxWidth(0.92f)
-                    .heightIn(max = 700.dp),
-                shape = RoundedCornerShape(24.dp),
-                color = Lavender
+                    .fillMaxSize()
+                    .safeDrawingPadding()
+                    .imePadding(),
+                contentAlignment = Alignment.Center
             ) {
-                AddEditTaskScreen(
-                    task = taskState,
-                    onSave = { updated ->
-                        viewModel.updateTask(updated)
-                        showEditDialog = false
-                    },
-                    onCancel = { showEditDialog = false }
-                )
+                val dialogWidth = minOf(maxWidth * 0.92f, 560.dp)
+                val dialogHeight = minOf(maxHeight * 0.90f, 650.dp)
+
+                Surface(
+                    modifier = Modifier
+                        .width(dialogWidth)
+                        .heightIn(max = dialogHeight),
+                    shape = RoundedCornerShape(24.dp),
+                    color = Lavender
+                ) {
+                    AddEditTaskScreen(
+                        task = taskState,
+                        onSave = { updated ->
+                            viewModel.updateTask(updated)
+                            showEditDialog = false
+                        },
+                        onCancel = {
+                            showEditDialog = false
+                        }
+                    )
+                }
             }
         }
     }
+
 
 
     if (showDeleteConfirmDialog && taskState != null) {
