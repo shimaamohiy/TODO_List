@@ -1,9 +1,11 @@
 package com.example.todo_list.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todo_list.data.Task
 import com.example.todo_list.data.TaskRepository
+import com.example.todo_list.notifications.NotificationHelper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,7 +17,8 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class TaskViewModel(
-    private val repository: TaskRepository
+    private val repository: TaskRepository,
+    private val context: Context? = null
 ) : ViewModel() {
 
     val allTasks: StateFlow<List<Task>> =
@@ -157,21 +160,34 @@ class TaskViewModel(
 
 
 
-    fun insertTask(task: Task) {
+    fun insertTask(task: Task, targetContext: Context? = context) {
         viewModelScope.launch {
-            repository.insertTask(task)
+            val newId = repository.insertTask(task)
+            targetContext?.let { ctx ->
+                NotificationHelper.scheduleReminder(ctx, task.copy(id = newId.toInt()))
+            }
         }
     }
 
-    fun updateTask(task: Task) {
+    fun updateTask(task: Task, targetContext: Context? = context) {
         viewModelScope.launch {
             repository.updateTask(task)
+            targetContext?.let { ctx ->
+                if (task.isCompleted) {
+                    NotificationHelper.cancelReminder(ctx, task.id)
+                } else {
+                    NotificationHelper.scheduleReminder(ctx, task)
+                }
+            }
         }
     }
 
-    fun deleteTask(task: Task) {
+    fun deleteTask(task: Task, targetContext: Context? = context) {
         viewModelScope.launch {
             repository.deleteTask(task)
+            targetContext?.let { ctx ->
+                NotificationHelper.cancelReminder(ctx, task.id)
+            }
         }
     }
 
@@ -181,12 +197,20 @@ class TaskViewModel(
         }
     }
 
-    fun toggleCompleted(task: Task) {
+    fun toggleCompleted(task: Task, targetContext: Context? = context) {
         viewModelScope.launch {
+            val newCompleted = !task.isCompleted
             repository.setCompleted(
                 task.id,
-                !task.isCompleted
+                newCompleted
             )
+            targetContext?.let { ctx ->
+                if (newCompleted) {
+                    NotificationHelper.cancelReminder(ctx, task.id)
+                } else {
+                    NotificationHelper.scheduleReminder(ctx, task.copy(isCompleted = false))
+                }
+            }
         }
     }
 
