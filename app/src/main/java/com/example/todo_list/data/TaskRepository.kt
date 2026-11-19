@@ -26,8 +26,8 @@ class TaskRepository(private val taskDao: TaskDao) {
     fun searchTasks(query: String) = taskDao.searchTasks(query)
     suspend fun setCompleted(id: Int, completed: Boolean) = taskDao.setCompleted(id, completed)
     // Insert a new task
-    suspend fun insertTask(task: Task) {
-        taskDao.insertTask(task)
+    suspend fun insertTask(task: Task): Long {
+        return taskDao.insertTask(task)
     }
 
     // Update an existing task

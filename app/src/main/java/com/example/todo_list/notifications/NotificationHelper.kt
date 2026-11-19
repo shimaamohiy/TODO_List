@@ -1,4 +1,4 @@
-package com.example.todo_list.notifications
+    package com.example.todo_list.notifications
 
 import android.app.AlarmManager
 import android.app.NotificationChannel
@@ -47,7 +47,12 @@ object NotificationHelper {
             timeInMillis = dueDate
         }.timeInMillis
 
-        if (reminderTime <= System.currentTimeMillis()) return
+        // If the scheduled time has already passed today, fire in 5 seconds for testing/immediate reminder
+        val triggerTime = if (reminderTime <= System.currentTimeMillis()) {
+            System.currentTimeMillis() + 5000L
+        } else {
+            reminderTime
+        }
 
         val intent = Intent(
             context,
@@ -71,7 +76,7 @@ object NotificationHelper {
 
         alarmManager.setAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            reminderTime,
+            triggerTime,
             pendingIntent
         )
     }

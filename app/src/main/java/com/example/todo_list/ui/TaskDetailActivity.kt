@@ -79,7 +79,7 @@ class TaskDetailActivity : ComponentActivity() {
 
         val database = TaskDatabase.getDatabase(applicationContext)
         val repository = TaskRepository(database.taskDao())
-        val factory = TaskViewModelFactory(repository)
+        val factory = TaskViewModelFactory(repository, applicationContext)
 
         setContent {
             val taskViewModel: TaskViewModel = viewModel(factory = factory)

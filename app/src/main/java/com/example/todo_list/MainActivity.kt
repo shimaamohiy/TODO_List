@@ -1,4 +1,4 @@
-package com.example.todo_list
+ package com.example.todo_list
 
 import android.Manifest
 import android.content.Intent
@@ -63,7 +63,8 @@ class MainActivity : ComponentActivity() {
         )
 
         val factory = TaskViewModelFactory(
-            repository
+            repository,
+            applicationContext
         )
 
         setContent {
