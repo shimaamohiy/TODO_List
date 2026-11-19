@@ -1,9 +1,10 @@
  package com.example.todo_list
 
 import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -11,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.todo_list.data.TaskDatabase
 import com.example.todo_list.data.TaskRepository
@@ -31,7 +33,6 @@ class MainActivity : ComponentActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
 
         handleIncomingIntent(intent)
@@ -40,11 +41,17 @@ class MainActivity : ComponentActivity() {
 
         NotificationHelper.createNotificationChannel(this)
 
-        if (Build.VERSION.SDK_INT >= 33) {
-
-            notificationPermissionLauncher.launch(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val isGranted = ContextCompat.checkSelfPermission(
+                this,
                 Manifest.permission.POST_NOTIFICATIONS
-            )
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if (!isGranted) {
+                notificationPermissionLauncher.launch(
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+            }
         }
 
         val database = TaskDatabase.getDatabase(
@@ -61,7 +68,6 @@ class MainActivity : ComponentActivity() {
         )
 
         setContent {
-
             val taskViewModel: TaskViewModel = viewModel(
                 factory = factory
             )

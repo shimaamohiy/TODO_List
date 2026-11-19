@@ -1,3 +1,4 @@
+
 package com.example.todo_list.ui
 
 import androidx.compose.animation.core.animateIntAsState
@@ -19,33 +20,30 @@ fun SummaryCard(
     title: String,
     count: Int,
     color: Color,
-
+    modifier: Modifier = Modifier
 ) {
-
     val animatedCount by animateIntAsState(
         targetValue = count,
         label = "Task Count"
     )
 
     Column(
-        modifier = Modifier
-            .width(105.dp)
-            .height(120.dp)
+        modifier = modifier
+            .defaultMinSize(minHeight = 120.dp)
             .shadow(4.dp, RoundedCornerShape(20.dp))
             .background(color, RoundedCornerShape(20.dp))
             .padding(12.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-
-
         Column {
-
             Text(
                 text = animatedCount.toString(),
-                fontSize = 30.sp,
+                fontSize = 25.sp,
                 fontWeight = FontWeight.Bold,
                 color = MainText
             )
+
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = title,

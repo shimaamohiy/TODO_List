@@ -7,6 +7,7 @@ import com.example.todo_list.data.Task
 import com.example.todo_list.data.TaskRepository
 import com.example.todo_list.notifications.NotificationHelper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -73,15 +74,11 @@ class TaskViewModel(
             0f
         )
 
-    
-
     val searchQuery = MutableStateFlow("")
 
     fun updateSearch(query: String) {
         searchQuery.value = query
     }
-
-    
 
     val selectedPriority = MutableStateFlow("All")
 
@@ -101,8 +98,6 @@ class TaskViewModel(
         selectedCategory.value = "All"
     }
 
-    
-
     val filteredTasks: StateFlow<List<Task>> =
         combine(
             allTasks,
@@ -112,7 +107,6 @@ class TaskViewModel(
         ) { tasks, query, priority, category ->
 
             tasks.filter { task ->
-
                 val matchesSearch =
                     task.title.contains(query, ignoreCase = true) ||
                             task.description.contains(query, ignoreCase = true)
@@ -127,14 +121,11 @@ class TaskViewModel(
 
                 matchesSearch && matchesPriority && matchesCategory
             }
-
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             emptyList()
         )
-
-
 
     private val selectedDay =
         MutableStateFlow(startOfDay(System.currentTimeMillis()))
@@ -142,12 +133,10 @@ class TaskViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     val tasksForSelectedDay: StateFlow<List<Task>> =
         selectedDay.flatMapLatest { start ->
-
             repository.getTasksBetween(
                 start,
                 nextDay(start)
             )
-
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
@@ -158,14 +147,18 @@ class TaskViewModel(
         selectedDay.value = dayStart
     }
 
-
-
-    fun insertTask(task: Task, targetContext: Context? = context) {
+    fun insertTask(
+        task: Task,
+        targetContext: Context? = context,
+        onInserted: ((Task) -> Unit)? = null
+    ) {
         viewModelScope.launch {
             val newId = repository.insertTask(task)
+            val insertedTask = task.copy(id = newId.toInt())
             targetContext?.let { ctx ->
-                NotificationHelper.scheduleReminder(ctx, task.copy(id = newId.toInt()))
+                NotificationHelper.scheduleReminder(ctx, insertedTask)
             }
+            onInserted?.invoke(insertedTask)
         }
     }
 
@@ -217,24 +210,20 @@ class TaskViewModel(
     fun search(query: String) =
         repository.searchTasks(query)
 
-    fun getTaskById(taskId: Int): kotlinx.coroutines.flow.Flow<Task?> =
+    fun getTaskById(taskId: Int): Flow<Task?> =
         repository.getTaskById(taskId)
 
     private fun startOfDay(time: Long): Long {
-
         return Calendar.getInstance().apply {
             timeInMillis = time
-
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
-
         }.timeInMillis
     }
 
     private fun nextDay(start: Long): Long {
-
         return Calendar.getInstance().apply {
             timeInMillis = start
             add(Calendar.DAY_OF_YEAR, 1)
