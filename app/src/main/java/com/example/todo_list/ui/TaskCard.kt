@@ -17,8 +17,9 @@ import androidx.compose.ui.unit.sp
 import com.example.todo_list.data.Task
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
-
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.ui.text.style.TextOverflow
 @Composable
 fun TaskCard(
     task: Task,
@@ -27,6 +28,8 @@ fun TaskCard(
     onDelete: () -> Unit,
     onShare: () -> Unit = {}
 ) {
+    val configuration = LocalConfiguration.current
+    val currentLocale = configuration.locales[0]
 
     val priorityColor = when (task.priority.lowercase()) {
         "high" -> Red
@@ -38,7 +41,7 @@ fun TaskCard(
     val dueDateText = task.dueDate?.let {
         SimpleDateFormat(
             "dd MMM yyyy",
-            Locale.getDefault()
+            currentLocale
         ).format(Date(it))
     }
 
@@ -55,7 +58,9 @@ fun TaskCard(
     ) {
 
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -75,11 +80,14 @@ fun TaskCard(
                 modifier = Modifier.weight(1f)
             ) {
 
+
                 Text(
                     text = task.title,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = MainText,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
                     textDecoration =
                         if (task.isCompleted)
                             TextDecoration.LineThrough
@@ -87,86 +95,90 @@ fun TaskCard(
                             TextDecoration.None
                 )
 
+
                 if (task.description.isNotBlank()) {
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = task.description,
-                        fontSize = 12.sp,
-                        color = GrayText
+                        fontSize = 13.sp,
+                        color = GrayText,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
 
-                Spacer(Modifier.height(10.dp))
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                    Spacer(Modifier.height(10.dp))
 
-                    Surface(
-                        color = LightPurple,
-                        shape = RoundedCornerShape(8.dp)
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Surface(
+                            color = LightPurple,
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = task.category,
+                                modifier = Modifier.padding(
+                                    horizontal = 8.dp,
+                                    vertical = 4.dp
+                                ),
+                                fontSize = 10.sp,
+                                color = DeepPurple
+                            )
+                        }
+
+                        Surface(
+                            color = priorityColor.copy(alpha = 0.2f),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = task.priority,
+                                modifier = Modifier.padding(
+                                    horizontal = 8.dp,
+                                    vertical = 4.dp
+                                ),
+                                fontSize = 10.sp,
+                                color = MainText
+                            )
+                        }
+                    }
+
+
+
+                    if (dueDateText != null) {
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = " $dueDateText",
+                            fontSize = 10.sp,
+                            color = GrayText
+                        )
+                    }
+                }
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    IconButton(
+                        onClick = onShare
                     ) {
                         Text(
-                            text = task.category,
-                            modifier = Modifier.padding(
-                                horizontal = 8.dp,
-                                vertical = 4.dp
-                            ),
-                            fontSize = 10.sp,
-                            color = DeepPurple
+                            text = "⤴",
+                            color = DeepPurple,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
                         )
                     }
 
-                    Spacer(Modifier.width(8.dp))
-
-                    Surface(
-                        color = priorityColor.copy(alpha = 0.2f),
-                        shape = RoundedCornerShape(8.dp)
+                    IconButton(
+                        onClick = onDelete
                     ) {
                         Text(
-                            text = task.priority,
-                            modifier = Modifier.padding(
-                                horizontal = 8.dp,
-                                vertical = 4.dp
-                            ),
-                            fontSize = 10.sp,
-                            color = MainText
+                            text = "✕",
+                            color = Color.Red,
+                            fontSize = 19.sp
                         )
                     }
-                }
-
-                if (dueDateText != null) {
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        text = " $dueDateText",
-                        fontSize = 10.sp,
-                        color = GrayText
-                    )
-                }
-            }
-
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                IconButton(
-                    onClick = onShare
-                ) {
-                    Text(
-                        text = "⤴",
-                        color = DeepPurple,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                IconButton(
-                    onClick = onDelete
-                ) {
-                    Text(
-                        text = "✕",
-                        color = Color.Red,
-                        fontSize = 19.sp
-                    )
                 }
             }
         }
     }
-}
