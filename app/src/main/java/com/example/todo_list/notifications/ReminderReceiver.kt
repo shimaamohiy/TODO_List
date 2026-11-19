@@ -1,6 +1,5 @@
 package com.example.todo_list.notifications
 
-
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,11 +10,11 @@ class ReminderReceiver : BroadcastReceiver() {
         context: Context,
         intent: Intent
     ) {
-
         val taskId = intent.getIntExtra(
             "task_id",
-            0
+            -1
         )
+        if (taskId == -1) return
 
         val taskTitle = intent.getStringExtra(
             "task_title"

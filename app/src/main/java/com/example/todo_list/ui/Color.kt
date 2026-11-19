@@ -24,7 +24,7 @@ val Green = Color(0xFF73a99A)
 
 val Orange = Color(0xFFFFB86B)
 
-val Red = Color(0xFF330000)
+val Red = Color(0xFF570F3F)
 
 val CardShadow = Color(0xFFE8DFF5)
 
